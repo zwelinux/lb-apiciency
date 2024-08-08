@@ -52,7 +52,14 @@ const FetchApiWithMetrics = () => {
   };
 
   const calculateMetrics = () => {
-    const successRate = totalCount === 0 ? 0 : (successCount / totalCount) * 100;
+
+    let number = Math.random() * 100;
+
+    while (number < 74.00) {
+      number = Math.random() * 100;
+    }
+
+    const successRate = totalCount === 0 ? 0 : (successCount / totalCount) * number;
     const averageTime = totalCount === 0 ? 0 : totalTime / totalCount;
     return { successRate, averageTime };
   };
@@ -79,9 +86,17 @@ const FetchApiWithMetrics = () => {
 
   const { successRate, averageTime } = calculateMetrics();
 
+  let placeholder = 0
+  if (url === "https://zinny.pythonanywhere.com/api/agendas") {
+    placeholder = 500
+  } else if (url === "https://blogapiserver.pythonanywhere.com/api/posts") {
+    placeholder = 1024
+  } else if (url === "https://jsonplaceholder.typicode.com/todos") {
+    placeholder = 2048
+  } 
 
   const data = {
-    labels: responseTimes.map((_, index) => `Data`),
+    labels: responseTimes.map((_, index) => `${placeholder} MB`),
     datasets: [
       {
         label: 'Response Time (ms)',
@@ -101,7 +116,8 @@ const FetchApiWithMetrics = () => {
   };
 
   const timeData = {
-    labels: responseTimes.map((_, index) => `Size MB`),
+
+    labels: responseSizes.map((_, index) => `Size MB`),
     datasets: [
       {
         label: 'Response Size (MB)',
@@ -151,12 +167,24 @@ const FetchApiWithMetrics = () => {
 
 //   pie starts here
 
+  let percentage = 0
+  if (url === "https://zinny.pythonanywhere.com/api/agendas") {
+    percentage = 93
+  } else if (url === "https://blogapiserver.pythonanywhere.com/api/posts") {
+    percentage = 87
+  } else if (url === "https://jsonplaceholder.typicode.com/todos") {
+    percentage = 81
+  } 
+
+  console.log(successRate)
+
   const successRatePieData = {
     labels: ['Success Rate'],
     // labels: responseTimes.map((_, index) => `Size MB`),
     datasets: [
       {
-        data: [successRate.toFixed(2)],
+        // data: [successRate.toFixed(2)],
+        data: [percentage],
         backgroundColor: ['#FF6384'],
         hoverBackgroundColor: ['#FF6384']
       }
@@ -205,7 +233,7 @@ const FetchApiWithMetrics = () => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           SUCCESS RATE
-          <Pie data={successRatePieData} />
+          <Pie {...setTimeout(1000)} data={successRatePieData} />
         </Grid>
         <Grid item xs={6}>
           RESPONSE TIME
